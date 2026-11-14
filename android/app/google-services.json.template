@@ -1,0 +1,38 @@
+{
+  "__NOTE__": "TEMPLATE ONLY — Download the REAL google-services.json from Firebase Console > Project Settings > Your apps > Android (com.ghaule.calculator) with your release & debug SHA-1/SHA-256 registered, and save it as android/app/google-services.json.",
+  "project_info": {
+    "project_number": "170188921418",
+    "project_id": "gen-lang-client-0255150793",
+    "storage_bucket": "gen-lang-client-0255150793.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "REPLACE_WITH_REAL_ANDROID_MOBILESDK_APP_ID",
+        "android_client_info": {
+          "package_name": "com.ghaule.calculator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "REPLACE_WITH_REAL_ANDROID_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ghaule.calculator",
+            "certificate_hash": "REPLACE_WITH_YOUR_KEYSTORE_SHA1"
+          }
+        },
+        {
+          "client_id": "REPLACE_WITH_REAL_WEB_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_YOUR_ANDROID_RESTRICTED_API_KEY"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

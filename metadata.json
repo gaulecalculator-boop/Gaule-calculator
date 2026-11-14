@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Ghaule Calculator - Nepal Offline Calculator Hub",
+  "description": "Smart Nepal Calculator Hub \u0026 Offline APK. Village interest (Byaj), Doodh (Milk ledger), Price to Weight, Land measurement, and 28+ tools working 100% offline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

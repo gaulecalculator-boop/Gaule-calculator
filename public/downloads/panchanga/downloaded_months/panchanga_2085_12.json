@@ -1,0 +1,27 @@
+{
+  "success": false,
+  "status": "unavailable_or_unreleased",
+  "year": 2085,
+  "month": 12,
+  "month_name_ne": "चैत",
+  "month_name_en": "Chaitra",
+  "http_code": 404,
+  "error": "HTTP 404 Not Found: Month 2085/12 not published yet on Mero Miti",
+  "source_url": "https://meromiti.com/api/panchanga/2085/12",
+  "total_days": 0,
+  "data": [],
+  "attempts": [
+    {
+      "url": "https://meromiti.com/api/panchanga/2085/12",
+      "attempt": 1,
+      "status_code": 200,
+      "timestamp": "2026-11-08T01:42:26.576294Z"
+    },
+    {
+      "url": "https://meromiti.com/data/panchanga-2085-12.json",
+      "attempt": 1,
+      "status_code": 404,
+      "timestamp": "2026-11-08T01:42:26.724278Z"
+    }
+  ]
+}

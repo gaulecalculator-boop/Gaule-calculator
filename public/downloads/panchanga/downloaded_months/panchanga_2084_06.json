@@ -1,0 +1,27 @@
+{
+  "success": false,
+  "status": "unavailable_or_unreleased",
+  "year": 2084,
+  "month": 6,
+  "month_name_ne": "असोज",
+  "month_name_en": "Ashwin",
+  "http_code": 404,
+  "error": "HTTP 404 Not Found: Month 2084/6 not published yet on Mero Miti",
+  "source_url": "https://meromiti.com/api/panchanga/2084/6",
+  "total_days": 0,
+  "data": [],
+  "attempts": [
+    {
+      "url": "https://meromiti.com/api/panchanga/2084/6",
+      "attempt": 1,
+      "status_code": 200,
+      "timestamp": "2026-11-08T01:42:21.750964Z"
+    },
+    {
+      "url": "https://meromiti.com/data/panchanga-2084-6.json",
+      "attempt": 1,
+      "status_code": 404,
+      "timestamp": "2026-11-08T01:42:21.892466Z"
+    }
+  ]
+}

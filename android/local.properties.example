@@ -1,0 +1,4 @@
+# Copy to android/local.properties with your Android SDK path and Web OAuth Client ID
+sdk.dir=/path/to/Android/Sdk
+# Optional override if not already generated from app/google-services.json default_web_client_id:
+# GOOGLE_WEB_CLIENT_ID=YOUR_REAL_WEB_CLIENT_ID.apps.googleusercontent.com

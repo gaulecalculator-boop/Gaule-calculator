@@ -1,0 +1,220 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "provider": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "lastLogin": { "type": "string" },
+        "accountStatus": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "name"]
+    },
+    "NoteItem": {
+      "title": "NoteItem",
+      "description": "User notes and ledger calculations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "category": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "title"]
+    },
+    "CalculationHistoryItem": {
+      "title": "CalculationHistoryItem",
+      "description": "Calculation history record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "toolId": { "type": "string" },
+        "toolName": { "type": "string" },
+        "summary": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "toolId", "summary", "timestamp"]
+    },
+    "SavedRecord": {
+      "title": "SavedRecord",
+      "description": "Customer ledger or milk diary record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized Admin or Calendar Manager role record",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["super_admin", "calendar_manager"] },
+        "name": { "type": "string" },
+        "assignedBy": { "type": "string" },
+        "assignedAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "CalendarVersion": {
+      "title": "CalendarVersion",
+      "description": "Published calendar dataset for specific Bikram Sambat year",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "year": { "type": "number" },
+        "status": { "type": "string" },
+        "publishedBy": { "type": "string" },
+        "publishedAt": { "type": "number" },
+        "totalDays": { "type": "number" },
+        "months": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "year", "publishedBy", "publishedAt"]
+    },
+    "CalendarAuditLog": {
+      "title": "CalendarAuditLog",
+      "description": "Immutable audit trail of calendar operations and role actions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "targetYear": { "type": "number" },
+        "authorEmail": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorRole": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "action", "authorEmail", "authorUid", "timestamp"]
+    },
+    "CalendarBackup": {
+      "title": "CalendarBackup",
+      "description": "Calendar backup snapshot for disaster recovery",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "year": { "type": "number" },
+        "label": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "dataSnapshot": { "type": "string" }
+      },
+      "required": ["id", "year", "createdBy", "timestamp"]
+    },
+    "MarketRates": {
+      "title": "MarketRates",
+      "description": "Daily Nepal Gold and Silver market rates",
+      "type": "object",
+      "properties": {
+        "gold_rate_per_tola": { "type": "number" },
+        "silver_rate_per_tola": { "type": "number" },
+        "gold_rate_purity": { "type": "string" },
+        "silver_rate_purity": { "type": "string" },
+        "source": { "type": "string" },
+        "updated_at": { "type": "number" },
+        "updated_by": { "type": "string" },
+        "rate_type": { "type": "string", "enum": ["official", "manual", "offline"] }
+      },
+      "required": ["gold_rate_per_tola", "silver_rate_per_tola", "updated_at"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document"
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": "NoteItem",
+      "description": "User notes collection"
+    },
+    "/users/{userId}/history/{recordId}": {
+      "schema": "CalculationHistoryItem",
+      "description": "User calculation history collection"
+    },
+    "/users/{userId}/savedRecords/{recordId}": {
+      "schema": "SavedRecord",
+      "description": "User customer and milk records collection"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminUser",
+      "description": "Authorized RBAC administration roles collection"
+    },
+    "/calendar_versions/{versionId}": {
+      "schema": "CalendarVersion",
+      "description": "Published calendar versions collection"
+    },
+    "/calendar_audit_logs/{logId}": {
+      "schema": "CalendarAuditLog",
+      "description": "Immutable audit log of all calendar modifications"
+    },
+    "/calendar_backups/{backupId}": {
+      "schema": "CalendarBackup",
+      "description": "Calendar point-in-time backups collection"
+    },
+    "/gold_silver_rates/{rateId}": {
+      "schema": "MarketRates",
+      "description": "Public gold and silver rates with admin write access"
+    },
+    "/shops/{shopId}": {
+      "schema": "UserProfile",
+      "description": "Hamro Pasal shop management data and subcollections"
+    },
+    "/milk_customers/{customerId}": {
+      "schema": "SavedRecord",
+      "description": "Milk customers collection"
+    },
+    "/daily_milk_entries/{entryId}": {
+      "schema": "SavedRecord",
+      "description": "Daily morning and evening milk entries"
+    },
+    "/no_milk_days/{dayId}": {
+      "schema": "SavedRecord",
+      "description": "Customer no milk day records"
+    },
+    "/billing_cycles/{cycleId}": {
+      "schema": "SavedRecord",
+      "description": "Customer monthly billing cycles"
+    },
+    "/milk_bills/{billId}": {
+      "schema": "SavedRecord",
+      "description": "Customer monthly and final bills"
+    },
+    "/milk_payments/{paymentId}": {
+      "schema": "SavedRecord",
+      "description": "Milk customer payments and receipts"
+    },
+    "/payment_allocations/{allocId}": {
+      "schema": "SavedRecord",
+      "description": "Payment allocation details"
+    },
+    "/payment_history/{historyId}": {
+      "schema": "SavedRecord",
+      "description": "Immutable customer payment history"
+    },
+    "/milk_rate_history/{rateId}": {
+      "schema": "SavedRecord",
+      "description": "Date-wise milk rate schedule history"
+    },
+    "/notification_records/{notifId}": {
+      "schema": "SavedRecord",
+      "description": "Milk billing notification items"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "CalendarAuditLog",
+      "description": "System audit logs for milk management operations"
+    }
+  }
+}

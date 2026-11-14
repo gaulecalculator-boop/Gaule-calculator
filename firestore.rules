@@ -1,0 +1,145 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------
+    // RBAC & SECURITY HELPERS
+    // -------------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'aayushinepalenergy@gmail.com' ||
+        request.auth.token.email == 'schoolsathi64@gmail.com' ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'super_admin')
+      );
+    }
+
+    function isCalendarManager() {
+      return isSignedIn() && (
+        isSuperAdmin() ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'calendar_manager')
+      );
+    }
+
+    // -------------------------------------------------------------
+    // USER DATA ISOLATION (Private partitioned storage per user)
+    // -------------------------------------------------------------
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+
+      match /{allSubcollections=**} {
+        allow read, write: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // ADMINS & RBAC ROLES COLLECTION
+    // Only Super Admin can assign/modify roles; users can read their own role document
+    // -------------------------------------------------------------
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && (request.auth.uid == adminId || isSuperAdmin());
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    // -------------------------------------------------------------
+    // CALENDAR VERSIONS (Published 2083, 2084, 2085 datasets)
+    // Public read for offline hydration, write restricted to Calendar Manager & Super Admin
+    // -------------------------------------------------------------
+    match /calendar_versions/{versionId} {
+      allow read: if true;
+      allow write: if isCalendarManager();
+    }
+
+    // -------------------------------------------------------------
+    // CALENDAR AUDIT LOGS (Immutable append-only audit trail)
+    // Creation restricted to Calendar Manager; updates and deletions strictly forbidden
+    // -------------------------------------------------------------
+    match /calendar_audit_logs/{logId} {
+      allow read: if isCalendarManager();
+      allow create: if isCalendarManager();
+      allow update, delete: if false; // Immutable audit trail!
+    }
+
+    // -------------------------------------------------------------
+    // CALENDAR BACKUPS (Point-in-time recovery snapshots)
+    // -------------------------------------------------------------
+    match /calendar_backups/{backupId} {
+      allow read, write: if isCalendarManager();
+    }
+
+    // -------------------------------------------------------------
+    // GOLD & SILVER MARKET RATES
+    // Public read for all users, write restricted to Admins & Managers
+    // -------------------------------------------------------------
+    match /gold_silver_rates/{rateId} {
+      allow read: if true;
+      allow write: if isCalendarManager();
+    }
+
+    // -------------------------------------------------------------
+    // HAMRO PASAL — MULTI-BUSINESS SHOP & RESTAURANT ISOLATION
+    // Complete data isolation per shopId; owner has full read/write access.
+    // -------------------------------------------------------------
+    match /shops/{shopId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin()
+      );
+
+      match /{subcollection=**} {
+        allow read, write: if isSignedIn() && (
+          get(/databases/$(database)/documents/shops/$(shopId)).data.ownerUid == request.auth.uid || isSuperAdmin()
+        );
+      }
+    }
+
+    // -------------------------------------------------------------
+    // ADVANCED MILK MANAGEMENT COLLECTIONS
+    // Secure read/write partitioned by authenticated owner
+    // -------------------------------------------------------------
+    match /milk_customers/{customerId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /daily_milk_entries/{entryId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /no_milk_days/{dayId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /billing_cycles/{cycleId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /milk_bills/{billId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /milk_payments/{paymentId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /payment_allocations/{allocId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /payment_history/{historyId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /milk_rate_history/{rateId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /notification_records/{notifId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+    match /audit_logs/{logId} {
+      allow read, write: if isSignedIn() && (resource == null || resource.data.ownerUid == request.auth.uid || isSuperAdmin());
+    }
+
+    // -------------------------------------------------------------
+    // GLOBAL DEFAULT DENY
+    // -------------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
